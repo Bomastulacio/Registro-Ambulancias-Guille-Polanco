@@ -1,0 +1,109 @@
+@import "tailwindcss";
+
+:root {
+  --nd-black: #000000;
+  --nd-surface: #111111;
+  --nd-surface-raised: #1A1A1A;
+  --nd-border: #222222;
+  --nd-border-visible: #333333;
+  --nd-text-disabled: #666666;
+  --nd-text-secondary: #999999;
+  --nd-text-primary: #E8E8E8;
+  --nd-text-display: #FFFFFF;
+  --nd-accent: #D71921;
+  --nd-accent-subtle: rgba(215,25,33,0.15);
+  --nd-success: #4A9E5C;
+  --nd-warning: #D4A843;
+  --nd-interactive: #5B9BF6;
+
+  /* Spacing Scale (8px base) */
+  --space-2xs: 2px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+  --space-4xl: 96px;
+}
+
+.light {
+  --nd-black: #F5F5F5;
+  --nd-surface: #FFFFFF;
+  --nd-surface-raised: #F0F0F0;
+  --nd-border: #E8E8E8;
+  --nd-border-visible: #CCCCCC;
+  --nd-text-disabled: #999999;
+  --nd-text-secondary: #666666;
+  --nd-text-primary: #1A1A1A;
+  --nd-text-display: #000000;
+  --nd-interactive: #007AFF;
+}
+
+@theme inline {
+  --color-background: var(--nd-black);
+  --color-foreground: var(--nd-text-primary);
+  
+  --color-surface: var(--nd-surface);
+  --color-surface-raised: var(--nd-surface-raised);
+  
+  --color-nd-border: var(--nd-border);
+  --color-nd-border-visible: var(--nd-border-visible);
+  
+  --color-text-disabled: var(--nd-text-disabled);
+  --color-text-secondary: var(--nd-text-secondary);
+  --color-text-primary: var(--nd-text-primary);
+  --color-text-display: var(--nd-text-display);
+  
+  --color-accent: var(--nd-accent);
+  --color-accent-subtle: var(--nd-accent-subtle);
+  --color-success: var(--nd-success);
+  --color-warning: var(--nd-warning);
+  --color-interactive: var(--nd-interactive);
+
+  --font-doto: var(--font-doto);
+  --font-grotesk: var(--font-space-grotesk);
+  --font-mono: var(--font-space-mono);
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-grotesk), Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.dot-grid {
+  background-image: radial-gradient(circle, var(--nd-border-visible) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+.dot-grid-subtle {
+  background-image: radial-gradient(circle, var(--nd-border) 0.5px, transparent 0.5px);
+  background-size: 12px 12px;
+}
+
+/* Base styles for Nothing Design */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* Hide scrollbar for cleaner look */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--nd-black); 
+}
+::-webkit-scrollbar-thumb {
+  background: var(--nd-border-visible); 
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--nd-text-disabled); 
+}

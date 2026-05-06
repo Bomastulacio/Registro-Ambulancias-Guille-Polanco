@@ -44,17 +44,22 @@ export default function RootLayout({
         )}
       >
         <header className="border-b border-nd-border-visible sticky top-0 bg-background/90 backdrop-blur z-50">
-          <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
-            <div className="flex items-baseline gap-4">
-              <Link href="/" className="font-doto text-text-display text-xl tracking-tight">
-                AMBULANCIAS
-              </Link>
-              <span className="font-mono text-text-secondary text-label tracking-widest uppercase hidden sm:inline">
-                / GUILLE POLANCO
-              </span>
+          <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex items-baseline gap-4 justify-between w-full md:w-auto">
+              <div className="flex items-baseline gap-4">
+                <Link href="/" className="font-doto text-text-display text-xl tracking-tight">
+                  AMBULANCIAS
+                </Link>
+                <span className="font-mono text-text-secondary text-label tracking-widest uppercase hidden sm:inline">
+                  / GUILLE POLANCO
+                </span>
+              </div>
+              <div className="md:hidden">
+                <ThemeToggle />
+              </div>
             </div>
             
-            <nav className="flex items-center gap-6 font-mono text-label tracking-widest uppercase">
+            <nav className="flex flex-wrap items-center gap-4 md:gap-6 font-mono text-xs md:text-sm tracking-widest uppercase">
               <Link href="/nuevo" className="text-text-primary hover:text-text-display transition-colors">
                 [ NUEVO ]
               </Link>
@@ -67,7 +72,9 @@ export default function RootLayout({
               <Link href="/resumen" className="text-text-secondary hover:text-text-primary transition-colors">
                 RESUMEN
               </Link>
-              <ThemeToggle />
+              <div className="hidden md:block">
+                <ThemeToggle />
+              </div>
             </nav>
           </div>
         </header>

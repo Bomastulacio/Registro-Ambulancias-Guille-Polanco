@@ -11,7 +11,7 @@ export async function DELETE(
     const { id } = await params;
     const { rowCount } = await sql`DELETE FROM lugares_frecuentes WHERE id = ${id}`;
 
-    if (rowCount > 0) {
+    if (rowCount !== null && rowCount > 0) {
       return NextResponse.json({ success: true });
     } else {
       return NextResponse.json({ error: "Record not found" }, { status: 404 });

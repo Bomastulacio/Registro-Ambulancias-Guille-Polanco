@@ -29,7 +29,7 @@ export interface LugarFrecuente {
 // Function to initialize tables (should be called once, e.g., via a special script or route)
 export async function initDb() {
   try {
-    await sql\`
+    await sql`
       CREATE TABLE IF NOT EXISTS viajes (
         id SERIAL PRIMARY KEY,
         fecha DATE NOT NULL,
@@ -46,9 +46,9 @@ export async function initDb() {
         notas TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
-    \`;
+    `;
 
-    await sql\`
+    await sql`
       CREATE TABLE IF NOT EXISTS lugares_frecuentes (
         id SERIAL PRIMARY KEY,
         alias VARCHAR(255) NOT NULL,
@@ -57,7 +57,7 @@ export async function initDb() {
         lon DOUBLE PRECISION NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
-    \`;
+    `;
     console.log("Database tables initialized successfully.");
   } catch (error) {
     console.error("Error initializing database tables:", error);

@@ -9,7 +9,7 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const { rowCount } = await sql\`DELETE FROM viajes WHERE id = \${id}\`;
+    const { rowCount } = await sql`DELETE FROM viajes WHERE id = ${id}`;
 
     if (rowCount > 0) {
       return NextResponse.json({ success: true });

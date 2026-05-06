@@ -20,21 +20,21 @@ export async function GET(request: Request) {
     let paramIndex = 1;
 
     if (from) {
-      queryStr += \` AND fecha >= $\${paramIndex++}\`;
+      queryStr += ` AND fecha >= $${paramIndex++}`;
       values.push(from);
     }
     if (to) {
-      queryStr += \` AND fecha <= $\${paramIndex++}\`;
+      queryStr += ` AND fecha <= $${paramIndex++}`;
       values.push(to);
     }
     if (ambulancia) {
-      queryStr += \` AND ambulancia ILIKE $\${paramIndex++}\`;
-      values.push(\`%\${ambulancia}%\`);
+      queryStr += ` AND ambulancia ILIKE $${paramIndex++}`;
+      values.push(`%${ambulancia}%`);
     }
     if (tripulante) {
       // In Postgres, searching a JSONB array for text:
-      queryStr += \` AND tripulacion::text ILIKE $\${paramIndex++}\`;
-      values.push(\`%\${tripulante}%\`);
+      queryStr += ` AND tripulacion::text ILIKE $${paramIndex++}`;
+      values.push(`%${tripulante}%`);
     }
 
     queryStr += " ORDER BY fecha DESC, created_at DESC";
@@ -74,18 +74,18 @@ export async function POST(request: Request) {
       notas,
     } = body;
 
-    const { rows } = await sql\`
+    const { rows } = await sql`
       INSERT INTO viajes (
         fecha, ambulancia, tripulacion, origen, destino, 
         origen_lat, origen_lon, destino_lat, destino_lon, 
         km, tiempo_estimado_minutos, notas
       ) VALUES (
-        \${fecha}, \${ambulancia}, \${JSON.stringify(tripulacion)}::jsonb, \${origen}, \${destino}, 
-        \${origen_lat}, \${origen_lon}, \${destino_lat}, \${destino_lon}, 
-        \${km}, \${tiempo_estimado_minutos}, \${notas || null}
+        ${fecha}, ${ambulancia}, ${JSON.stringify(tripulacion)}::jsonb, ${origen}, ${destino}, 
+        ${origen_lat}, ${origen_lon}, ${destino_lat}, ${destino_lon}, 
+        ${km}, ${tiempo_estimado_minutos}, ${notas || null}
       )
       RETURNING id
-    \`;
+    `;
 
     return NextResponse.json({ success: true, id: rows[0].id });
   } catch (error) {

@@ -106,7 +106,7 @@ export default function Lugares() {
   const handleDelete = async (id: number) => {
     if (!confirm("¿Eliminar este lugar frecuente?")) return;
     try {
-      const res = await fetch(\`/api/lugares/\${id}\`, { method: "DELETE" });
+      const res = await fetch(`/api/lugares/${id}`, { method: "DELETE" });
       if (res.ok) {
         setLugares(lugares.filter(l => l.id !== id));
       }

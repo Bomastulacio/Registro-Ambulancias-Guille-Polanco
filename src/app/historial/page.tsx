@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
-import { Trash2, Download, Search, AlertTriangle, ChevronDown, ChevronUp } from "lucide-react";
+import { Trash2, Download } from "lucide-react";
 import type { Viaje } from "@/lib/db";
 
 const RutaCell = ({ origen, destino }: { origen: string; destino: string }) => {
@@ -50,7 +50,7 @@ export default function Historial() {
 
       const res = await fetch(`/api/viajes?${params.toString()}`);
       const data = await res.json();
-      setViajes(data);
+      setViajes(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error(error);
     } finally {

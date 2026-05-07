@@ -29,7 +29,7 @@ export default function Lugares() {
     try {
       const res = await fetch("/api/lugares");
       const data = await res.json();
-      setLugares(data);
+      setLugares(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error(err);
     } finally {

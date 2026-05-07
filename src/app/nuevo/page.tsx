@@ -152,7 +152,7 @@ export default function NuevoViaje() {
 
       // Step 2: Calculate with OSRM
       if (orig && dest) {
-        const url = `http://router.project-osrm.org/route/v1/driving/${orig.lon},${orig.lat};${dest.lon},${dest.lat}?overview=false`;
+        const url = `https://router.project-osrm.org/route/v1/driving/${orig.lon},${orig.lat};${dest.lon},${dest.lat}?overview=false`;
         const res = await fetch(url);
         if (!res.ok) throw new Error("Error al calcular ruta en OSRM");
         

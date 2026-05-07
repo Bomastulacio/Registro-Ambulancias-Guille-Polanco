@@ -5,6 +5,13 @@ import { format } from "date-fns";
 import { Trash2, Download } from "lucide-react";
 import type { Viaje } from "@/lib/db";
 
+function formatTiempo(mins: number): string {
+  if (mins < 60) return `${mins} min`;
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  return m === 0 ? `${h}h` : `${h}h ${m}min`;
+}
+
 const RutaCell = ({ origen, destino }: { origen: string; destino: string }) => {
   const [expanded, setExpanded] = useState(false);
   const isLong = origen.length > 35 || destino.length > 35;
@@ -221,8 +228,7 @@ export default function Historial() {
                           <span className="font-mono text-label text-text-secondary ml-1">KM</span>
                         </div>
                         <div>
-                          <span className="font-mono text-text-primary">{viaje.tiempo_estimado_minutos}</span>
-                          <span className="font-mono text-label text-text-secondary ml-1">MIN</span>
+                          <span className="font-mono text-text-primary">{viaje.tiempo_estimado_minutos ? formatTiempo(viaje.tiempo_estimado_minutos) : "—"}</span>
                         </div>
                       </div>
                     </td>

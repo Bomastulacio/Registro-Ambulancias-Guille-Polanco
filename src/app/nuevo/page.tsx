@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
-import { Search, MapPin, Navigation, Plus, X, Save, AlertTriangle } from "lucide-react";
+import { Search, Navigation, Plus, X, Save, AlertTriangle } from "lucide-react";
 
 import type { LugarFrecuente } from "@/lib/db";
 
@@ -12,6 +12,13 @@ interface NominatimResult {
   display_name: string;
   lat: string;
   lon: string;
+}
+
+function formatTiempo(mins: number): string {
+  if (mins < 60) return `${mins} min`;
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  return m === 0 ? `${h}h` : `${h}h ${m}min`;
 }
 
 export default function NuevoViaje() {
@@ -450,14 +457,16 @@ export default function NuevoViaje() {
           <div className="flex flex-col gap-1">
             <label className="font-mono text-label text-text-secondary uppercase">Tiempo Est.</label>
             <div className="flex items-baseline gap-2">
-              <input 
-                type="number" 
+              <input
+                type="number"
                 value={tiempo}
                 onChange={e => setTiempo(e.target.value)}
                 className="bg-transparent font-doto text-text-display text-3xl outline-none w-24 border-b border-transparent focus:border-nd-border-visible"
                 placeholder="0"
               />
-              <span className="font-mono text-label text-text-secondary">MIN</span>
+              <span className="font-mono text-label text-text-secondary">
+                {tiempo && parseInt(tiempo) > 0 ? formatTiempo(parseInt(tiempo)) : "MIN"}
+              </span>
             </div>
           </div>
         </div>

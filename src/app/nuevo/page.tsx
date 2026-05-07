@@ -135,27 +135,19 @@ export default function NuevoViaje() {
       if (!orig) {
         const results = await geocode(origen);
         if (results.length === 0) throw new Error("No se encontró el origen");
-        if (results.length === 1) {
-          orig = results[0];
-          setSelectedOrigen(orig);
-        } else {
-          setOrigenResults(results);
-          setIsCalculating(false);
-          return; // Wait for user selection
-        }
+        orig = results[0];
+        setSelectedOrigen(orig);
+        setOrigen(orig.display_name);
+        setOrigenResults([]);
       }
 
       if (!dest) {
         const results = await geocode(destino);
         if (results.length === 0) throw new Error("No se encontró el destino");
-        if (results.length === 1) {
-          dest = results[0];
-          setSelectedDestino(dest);
-        } else {
-          setDestinoResults(results);
-          setIsCalculating(false);
-          return; // Wait for user selection
-        }
+        dest = results[0];
+        setSelectedDestino(dest);
+        setDestino(dest.display_name);
+        setDestinoResults([]);
       }
 
       // Step 2: Calculate with OSRM

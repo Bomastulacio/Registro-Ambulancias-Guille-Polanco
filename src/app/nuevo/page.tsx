@@ -29,6 +29,8 @@ export default function NuevoViaje() {
   const [ambulancia, setAmbulancia] = useState("");
   const [tripulacion, setTripulacion] = useState<string[]>([]);
   const [nuevoTripulante, setNuevoTripulante] = useState("");
+  const [pacientes, setPacientes] = useState<string[]>([]);
+  const [nuevoPaciente, setNuevoPaciente] = useState("");
   
   const [origen, setOrigen] = useState("");
   const [destino, setDestino] = useState("");
@@ -89,6 +91,18 @@ export default function NuevoViaje() {
 
   const removeTripulante = (name: string) => {
     setTripulacion(tripulacion.filter(t => t !== name));
+  };
+
+  const addPaciente = () => {
+    const nombre = nuevoPaciente.trim();
+    if (nombre && !pacientes.includes(nombre)) {
+      setPacientes([...pacientes, nombre]);
+      setNuevoPaciente("");
+    }
+  };
+
+  const removePaciente = (name: string) => {
+    setPacientes(pacientes.filter(p => p !== name));
   };
 
   const geocode = async (query: string): Promise<NominatimResult[]> => {
@@ -193,6 +207,7 @@ export default function NuevoViaje() {
         fecha,
         ambulancia,
         tripulacion,
+        pacientes,
         origen: selectedOrigen ? selectedOrigen.display_name : origen,
         destino: selectedDestino ? selectedDestino.display_name : destino,
         origen_lat: selectedOrigen ? parseFloat(selectedOrigen.lat) : null,
@@ -300,6 +315,41 @@ export default function NuevoViaje() {
               </div>
             ))}
             {tripulacion.length === 0 && (
+              <span className="font-mono text-text-disabled text-sm">-- Ninguno agregado --</span>
+            )}
+          </div>
+        </div>
+
+        {/* PACIENTES */}
+        <div className="flex flex-col gap-4">
+          <label className="font-mono text-label text-text-secondary uppercase">Paciente/s <span className="text-text-disabled">(opcional)</span></label>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={nuevoPaciente}
+              onChange={e => setNuevoPaciente(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addPaciente())}
+              placeholder="Nombre del paciente..."
+              className="flex-1 bg-transparent border-b border-nd-border-visible py-2 text-text-primary focus:border-text-primary outline-none font-mono"
+            />
+            <button
+              onClick={addPaciente}
+              type="button"
+              className="px-4 border border-nd-border-visible hover:border-text-primary transition-colors flex items-center justify-center text-text-secondary hover:text-text-primary"
+            >
+              <Plus size={20} />
+            </button>
+          </div>
+          <div className="flex flex-wrap gap-2 mt-2">
+            {pacientes.map(p => (
+              <div key={p} className="flex items-center gap-2 border border-nd-border-visible rounded-full px-3 py-1 text-sm font-mono text-text-primary">
+                {p}
+                <button onClick={() => removePaciente(p)} className="text-text-disabled hover:text-accent transition-colors">
+                  <X size={14} />
+                </button>
+              </div>
+            ))}
+            {pacientes.length === 0 && (
               <span className="font-mono text-text-disabled text-sm">-- Ninguno agregado --</span>
             )}
           </div>

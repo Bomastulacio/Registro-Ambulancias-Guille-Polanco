@@ -87,27 +87,18 @@ export default function Historial() {
     
     const XLSX = await import("xlsx");
     
-    const data = viajes.map(v => {
-      let tripStr = "";
-      try {
-        const arr = JSON.parse(v.tripulacion);
-        tripStr = arr.join(", ");
-      } catch (e) {
-        tripStr = v.tripulacion;
-      }
-      
-      return {
-        ID: v.id,
-        Fecha: v.fecha,
-        Ambulancia: v.ambulancia,
-        Tripulacion: tripStr,
-        Origen: v.origen,
-        Destino: v.destino,
-        KM: v.km,
-        "Tiempo Est. (Min)": v.tiempo_estimado_minutos,
-        Notas: v.notas || ""
-      };
-    });
+    const data = viajes.map(v => ({
+      ID: v.id,
+      Fecha: v.fecha,
+      Ambulancia: v.ambulancia,
+      Tripulacion: parseList(v.tripulacion),
+      Pacientes: v.pacientes ? parseList(v.pacientes) : "",
+      Origen: v.origen,
+      Destino: v.destino,
+      KM: v.km,
+      "Tiempo Est. (Min)": v.tiempo_estimado_minutos,
+      Notas: v.notas || ""
+    }));
 
     const worksheet = XLSX.utils.json_to_sheet(data);
     const workbook = XLSX.utils.book_new();
@@ -116,9 +107,9 @@ export default function Historial() {
     XLSX.writeFile(workbook, `viajes_${format(new Date(), 'yyyy-MM-dd')}.xlsx`);
   };
 
-  const parseTripStr = (tripulacion: string) => {
-    try { return JSON.parse(tripulacion).join(", "); }
-    catch { return tripulacion; }
+  const parseList = (val: string) => {
+    try { const arr = JSON.parse(val); return Array.isArray(arr) ? arr.join(", ") : val; }
+    catch { return val; }
   };
 
   return (
@@ -197,7 +188,7 @@ export default function Historial() {
           {/* MOBILE: cards */}
           <div className="md:hidden flex flex-col">
             {viajes.map((viaje) => {
-              const tripStr = parseTripStr(viaje.tripulacion);
+              const tripStr = parseList(viaje.tripulacion);
               return (
                 <div key={viaje.id} className="py-4 border-b border-nd-border-visible last:border-0 flex flex-col gap-2">
                   <div className="flex justify-between items-start gap-2">
@@ -214,6 +205,11 @@ export default function Historial() {
                       <div className="font-mono text-text-primary text-sm">{viaje.ambulancia}</div>
                       {tripStr && (
                         <div className="font-mono text-xs text-text-secondary truncate">{tripStr}</div>
+                      )}
+                      {viaje.pacientes && parseList(viaje.pacientes) && (
+                        <div className="font-mono text-xs text-text-secondary truncate">
+                          <span className="text-text-disabled">Pac: </span>{parseList(viaje.pacientes)}
+                        </div>
                       )}
                     </div>
                     <button
@@ -244,7 +240,7 @@ export default function Historial() {
               </thead>
               <tbody>
                 {viajes.map((viaje) => {
-                  const tripStr = parseTripStr(viaje.tripulacion);
+                  const tripStr = parseList(viaje.tripulacion);
                   return (
                     <tr key={viaje.id} className="hover:bg-surface-raised transition-colors group">
                       <td className="py-4 px-2 border-b border-nd-border-visible align-top whitespace-nowrap">
@@ -255,6 +251,11 @@ export default function Historial() {
                         <div className="font-mono text-caption text-text-secondary mt-1 max-w-[200px] truncate" title={tripStr}>
                           {tripStr}
                         </div>
+                        {viaje.pacientes && parseList(viaje.pacientes) && (
+                          <div className="font-mono text-caption text-text-disabled mt-1 max-w-[200px] truncate">
+                            <span>Pac: </span>{parseList(viaje.pacientes)}
+                          </div>
+                        )}
                       </td>
                       <td className="py-4 px-2 border-b border-nd-border-visible align-top max-w-[300px]">
                         <RutaCell origen={viaje.origen} destino={viaje.destino} />

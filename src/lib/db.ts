@@ -5,6 +5,7 @@ export interface Viaje {
   fecha: string;
   ambulancia: string;
   tripulacion: string; // JSON string from API or DB
+  pacientes: string;   // JSON string from API or DB
   origen: string;
   destino: string;
   origen_lat: number | null;
@@ -58,6 +59,10 @@ export async function initDb() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `;
+    await sql`
+      ALTER TABLE viajes ADD COLUMN IF NOT EXISTS pacientes JSONB DEFAULT '[]'::jsonb;
+    `;
+
     console.log("Database tables initialized successfully.");
   } catch (error) {
     console.error("Error initializing database tables:", error);

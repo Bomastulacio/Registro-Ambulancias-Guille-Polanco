@@ -45,8 +45,8 @@ export async function GET(request: Request) {
     const viajes = rows.map(row => ({
       ...row,
       fecha: row.fecha instanceof Date ? row.fecha.toISOString().split('T')[0] : row.fecha,
-      // Stringify JSONB for compatibility with the existing frontend
-      tripulacion: JSON.stringify(row.tripulacion)
+      tripulacion: JSON.stringify(row.tripulacion),
+      pacientes: JSON.stringify(row.pacientes ?? []),
     }));
 
     return NextResponse.json(viajes);
@@ -63,6 +63,7 @@ export async function POST(request: Request) {
       fecha,
       ambulancia,
       tripulacion,
+      pacientes,
       origen,
       destino,
       origen_lat,
@@ -76,12 +77,14 @@ export async function POST(request: Request) {
 
     const { rows } = await sql`
       INSERT INTO viajes (
-        fecha, ambulancia, tripulacion, origen, destino, 
-        origen_lat, origen_lon, destino_lat, destino_lon, 
+        fecha, ambulancia, tripulacion, pacientes, origen, destino,
+        origen_lat, origen_lon, destino_lat, destino_lon,
         km, tiempo_estimado_minutos, notas
       ) VALUES (
-        ${fecha}, ${ambulancia}, ${JSON.stringify(tripulacion)}::jsonb, ${origen}, ${destino}, 
-        ${origen_lat}, ${origen_lon}, ${destino_lat}, ${destino_lon}, 
+        ${fecha}, ${ambulancia}, ${JSON.stringify(tripulacion)}::jsonb,
+        ${JSON.stringify(pacientes ?? [])}::jsonb,
+        ${origen}, ${destino},
+        ${origen_lat}, ${origen_lon}, ${destino_lat}, ${destino_lon},
         ${km}, ${tiempo_estimado_minutos}, ${notas || null}
       )
       RETURNING id

@@ -1,9 +1,11 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Space_Mono, Doto } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
 import clsx from "clsx";
 import ThemeToggle from "@/components/ThemeToggle";
+import PWARegister from "@/components/PWARegister";
+import InstallBanner from "@/components/InstallBanner";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -26,6 +28,19 @@ const doto = Doto({
 export const metadata: Metadata = {
   title: "Registro de Ambulancias",
   description: "Registro de viajes de ambulancia - Guille Polanco",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Ambulancias",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#FFFFFF" },
+    { media: "(prefers-color-scheme: dark)", color: "#000000" },
+  ],
 };
 
 export default function RootLayout({
@@ -82,6 +97,9 @@ export default function RootLayout({
         <main className="flex-1 max-w-7xl w-full mx-auto px-4 md:px-8 py-8 md:py-12">
           {children}
         </main>
+
+        <PWARegister />
+        <InstallBanner />
       </body>
     </html>
   );

@@ -88,7 +88,7 @@ export default function NuevoViaje() {
     const url = new URL("https://nominatim.openstreetmap.org/search");
     url.searchParams.append("q", query);
     url.searchParams.append("countrycodes", "ar");
-    url.searchParams.append("limit", "3");
+    url.searchParams.append("limit", "5");
     url.searchParams.append("format", "json");
 
     const res = await fetch(url.toString(), {
@@ -98,6 +98,30 @@ export default function NuevoViaje() {
     if (!res.ok) throw new Error("Error en geocodificación");
     return res.json();
   };
+
+  // Búsqueda automática con debounce para Origen
+  useEffect(() => {
+    if (!origen || selectedOrigen || origen.length < 4) {
+      setOrigenResults([]);
+      return;
+    }
+    const timer = setTimeout(() => {
+      geocode(origen).then(setOrigenResults).catch(console.error);
+    }, 600);
+    return () => clearTimeout(timer);
+  }, [origen, selectedOrigen]);
+
+  // Búsqueda automática con debounce para Destino
+  useEffect(() => {
+    if (!destino || selectedDestino || destino.length < 4) {
+      setDestinoResults([]);
+      return;
+    }
+    const timer = setTimeout(() => {
+      geocode(destino).then(setDestinoResults).catch(console.error);
+    }, 600);
+    return () => clearTimeout(timer);
+  }, [destino, selectedDestino]);
 
   const calculateRoute = async () => {
     try {
@@ -329,8 +353,8 @@ export default function NuevoViaje() {
             )}
 
             {origenResults.length > 0 && (
-              <div className="absolute top-full left-0 w-full mt-1 bg-surface border border-nd-border-visible z-10 p-2 flex flex-col gap-1">
-                <span className="font-mono text-label text-accent uppercase mb-1">Múltiples opciones encontradas:</span>
+              <div className="absolute top-full left-0 w-full mt-1 bg-surface border border-nd-border-visible z-10 p-2 flex flex-col gap-1 shadow-lg max-h-60 overflow-y-auto">
+                <span className="font-mono text-label text-accent uppercase mb-1">Resultados:</span>
                 {origenResults.map(res => (
                   <button 
                     key={res.place_id} 
@@ -386,8 +410,8 @@ export default function NuevoViaje() {
             )}
 
             {destinoResults.length > 0 && (
-              <div className="absolute top-full left-0 w-full mt-1 bg-surface border border-nd-border-visible z-10 p-2 flex flex-col gap-1">
-                <span className="font-mono text-label text-accent uppercase mb-1">Múltiples opciones encontradas:</span>
+              <div className="absolute top-full left-0 w-full mt-1 bg-surface border border-nd-border-visible z-10 p-2 flex flex-col gap-1 shadow-lg max-h-60 overflow-y-auto">
+                <span className="font-mono text-label text-accent uppercase mb-1">Resultados:</span>
                 {destinoResults.map(res => (
                   <button 
                     key={res.place_id} 

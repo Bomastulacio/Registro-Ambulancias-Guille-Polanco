@@ -116,138 +116,179 @@ export default function Historial() {
     XLSX.writeFile(workbook, `viajes_${format(new Date(), 'yyyy-MM-dd')}.xlsx`);
   };
 
+  const parseTripStr = (tripulacion: string) => {
+    try { return JSON.parse(tripulacion).join(", "); }
+    catch { return tripulacion; }
+  };
+
   return (
-    <div className="flex flex-col gap-8">
-      <div className="flex justify-between items-end">
+    <div className="flex flex-col gap-6">
+
+      {/* HEADER */}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-3 border-b border-nd-border-visible pb-4">
         <div>
           <h1 className="font-doto text-text-display text-4xl mb-2">HISTORIAL</h1>
           <p className="font-mono text-text-secondary text-sm uppercase tracking-widest">
             / REGISTROS DE VIAJES
           </p>
         </div>
-        <button 
+        <button
           onClick={exportExcel}
-          className="border border-nd-border-visible text-text-primary font-mono text-sm uppercase px-4 py-2 hover:bg-surface-raised transition-colors flex items-center gap-2"
+          className="self-start sm:self-auto border border-nd-border-visible text-text-primary font-mono text-xs uppercase px-3 py-2 hover:bg-surface-raised transition-colors flex items-center gap-2 shrink-0"
         >
-          <Download size={16} />
-          Exportar EXCEL
+          <Download size={14} />
+          <span>Exportar EXCEL</span>
         </button>
       </div>
 
       {/* FILTROS */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 border border-nd-border-visible bg-surface-raised">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 p-4 border border-nd-border-visible bg-surface-raised">
         <div className="flex flex-col gap-1">
           <label className="font-mono text-label text-text-secondary uppercase">Desde</label>
-          <input 
-            type="date" 
+          <input
+            type="date"
             value={from}
             onChange={e => setFrom(e.target.value)}
-            className="bg-transparent border-b border-nd-border-visible py-1 text-text-primary font-mono outline-none focus:border-text-primary"
+            className="bg-transparent border-b border-nd-border-visible py-1 text-text-primary font-mono text-sm outline-none focus:border-text-primary"
           />
         </div>
         <div className="flex flex-col gap-1">
           <label className="font-mono text-label text-text-secondary uppercase">Hasta</label>
-          <input 
-            type="date" 
+          <input
+            type="date"
             value={to}
             onChange={e => setTo(e.target.value)}
-            className="bg-transparent border-b border-nd-border-visible py-1 text-text-primary font-mono outline-none focus:border-text-primary"
+            className="bg-transparent border-b border-nd-border-visible py-1 text-text-primary font-mono text-sm outline-none focus:border-text-primary"
           />
         </div>
         <div className="flex flex-col gap-1">
           <label className="font-mono text-label text-text-secondary uppercase">Ambulancia</label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             placeholder="Buscar..."
             value={ambulancia}
             onChange={e => setAmbulancia(e.target.value)}
-            className="bg-transparent border-b border-nd-border-visible py-1 text-text-primary font-mono outline-none focus:border-text-primary"
+            className="bg-transparent border-b border-nd-border-visible py-1 text-text-primary font-mono text-sm outline-none focus:border-text-primary"
           />
         </div>
         <div className="flex flex-col gap-1">
           <label className="font-mono text-label text-text-secondary uppercase">Tripulante</label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             placeholder="Buscar..."
             value={tripulante}
             onChange={e => setTripulante(e.target.value)}
-            className="bg-transparent border-b border-nd-border-visible py-1 text-text-primary font-mono outline-none focus:border-text-primary"
+            className="bg-transparent border-b border-nd-border-visible py-1 text-text-primary font-mono text-sm outline-none focus:border-text-primary"
           />
         </div>
       </div>
 
-      {/* TABLA */}
-      <div className="overflow-x-auto w-full">
-        {isLoading ? (
-          <div className="py-12 flex justify-center text-text-secondary font-mono tracking-widest uppercase">
-            [ CARGANDO... ]
+      {/* CONTENIDO */}
+      {isLoading ? (
+        <div className="py-12 flex justify-center text-text-secondary font-mono tracking-widest uppercase">
+          [ CARGANDO... ]
+        </div>
+      ) : viajes.length === 0 ? (
+        <div className="py-24 flex flex-col items-center justify-center text-center gap-4 border border-nd-border-visible border-dashed">
+          <h3 className="font-mono text-text-secondary uppercase tracking-widest">[ SIN REGISTROS ]</h3>
+        </div>
+      ) : (
+        <>
+          {/* MOBILE: cards */}
+          <div className="md:hidden flex flex-col">
+            {viajes.map((viaje) => {
+              const tripStr = parseTripStr(viaje.tripulacion);
+              return (
+                <div key={viaje.id} className="py-4 border-b border-nd-border-visible last:border-0 flex flex-col gap-2">
+                  <div className="flex justify-between items-start gap-2">
+                    <span className="font-mono text-xs text-text-secondary whitespace-nowrap">{viaje.fecha}</span>
+                    <div className="flex gap-3 font-mono text-xs text-text-secondary">
+                      {viaje.km != null && <span>{viaje.km} km</span>}
+                      {viaje.tiempo_estimado_minutos != null && (
+                        <span>{formatTiempo(viaje.tiempo_estimado_minutos)}</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex justify-between items-start gap-2">
+                    <div className="min-w-0">
+                      <div className="font-mono text-text-primary text-sm">{viaje.ambulancia}</div>
+                      {tripStr && (
+                        <div className="font-mono text-xs text-text-secondary truncate">{tripStr}</div>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => viaje.id && handleDelete(viaje.id)}
+                      className="text-text-disabled hover:text-accent transition-colors shrink-0 p-1"
+                      title="Eliminar"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                  <RutaCell origen={viaje.origen} destino={viaje.destino} />
+                </div>
+              );
+            })}
           </div>
-        ) : viajes.length === 0 ? (
-          <div className="py-24 flex flex-col items-center justify-center text-center gap-4 border border-nd-border-visible border-dashed">
-            <h3 className="font-mono text-text-secondary uppercase tracking-widest">[ SIN REGISTROS ]</h3>
-          </div>
-        ) : (
-          <table className="w-full text-left border-collapse min-w-[800px]">
-            <thead>
-              <tr>
-                <th className="font-mono text-label text-text-secondary uppercase pb-4 border-b border-nd-border-visible px-2">Fecha</th>
-                <th className="font-mono text-label text-text-secondary uppercase pb-4 border-b border-nd-border-visible px-2">Ambulancia</th>
-                <th className="font-mono text-label text-text-secondary uppercase pb-4 border-b border-nd-border-visible px-2">Ruta</th>
-                <th className="font-mono text-label text-text-secondary uppercase pb-4 border-b border-nd-border-visible px-2 text-right">Métricas</th>
-                <th className="font-mono text-label text-text-secondary uppercase pb-4 border-b border-nd-border-visible px-2 text-right"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {viajes.map((viaje) => {
-                let tripStr = "";
-                try {
-                  const arr = JSON.parse(viaje.tripulacion);
-                  tripStr = arr.join(", ");
-                } catch (e) {
-                  tripStr = viaje.tripulacion;
-                }
 
-                return (
-                  <tr key={viaje.id} className="hover:bg-surface-raised transition-colors group">
-                    <td className="py-4 px-2 border-b border-nd-border-visible align-top">
-                      <div className="font-mono text-text-primary">{viaje.fecha}</div>
-                    </td>
-                    <td className="py-4 px-2 border-b border-nd-border-visible align-top">
-                      <div className="font-mono text-text-primary">{viaje.ambulancia}</div>
-                      <div className="font-mono text-caption text-text-secondary mt-1 max-w-[200px] truncate" title={tripStr}>
-                        {tripStr}
-                      </div>
-                    </td>
-                    <td className="py-4 px-2 border-b border-nd-border-visible align-top max-w-[300px]">
-                      <RutaCell origen={viaje.origen} destino={viaje.destino} />
-                    </td>
-                    <td className="py-4 px-2 border-b border-nd-border-visible align-top text-right">
-                      <div className="flex justify-end gap-4">
-                        <div>
-                          <span className="font-mono text-text-primary">{viaje.km}</span>
-                          <span className="font-mono text-label text-text-secondary ml-1">KM</span>
+          {/* DESKTOP: tabla */}
+          <div className="hidden md:block overflow-x-auto w-full">
+            <table className="w-full text-left border-collapse min-w-[700px]">
+              <thead>
+                <tr>
+                  <th className="font-mono text-label text-text-secondary uppercase pb-4 border-b border-nd-border-visible px-2">Fecha</th>
+                  <th className="font-mono text-label text-text-secondary uppercase pb-4 border-b border-nd-border-visible px-2">Ambulancia</th>
+                  <th className="font-mono text-label text-text-secondary uppercase pb-4 border-b border-nd-border-visible px-2">Ruta</th>
+                  <th className="font-mono text-label text-text-secondary uppercase pb-4 border-b border-nd-border-visible px-2 text-right">Métricas</th>
+                  <th className="pb-4 border-b border-nd-border-visible px-2"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {viajes.map((viaje) => {
+                  const tripStr = parseTripStr(viaje.tripulacion);
+                  return (
+                    <tr key={viaje.id} className="hover:bg-surface-raised transition-colors group">
+                      <td className="py-4 px-2 border-b border-nd-border-visible align-top whitespace-nowrap">
+                        <div className="font-mono text-text-primary">{viaje.fecha}</div>
+                      </td>
+                      <td className="py-4 px-2 border-b border-nd-border-visible align-top">
+                        <div className="font-mono text-text-primary">{viaje.ambulancia}</div>
+                        <div className="font-mono text-caption text-text-secondary mt-1 max-w-[200px] truncate" title={tripStr}>
+                          {tripStr}
                         </div>
-                        <div>
-                          <span className="font-mono text-text-primary">{viaje.tiempo_estimado_minutos ? formatTiempo(viaje.tiempo_estimado_minutos) : "—"}</span>
+                      </td>
+                      <td className="py-4 px-2 border-b border-nd-border-visible align-top max-w-[300px]">
+                        <RutaCell origen={viaje.origen} destino={viaje.destino} />
+                      </td>
+                      <td className="py-4 px-2 border-b border-nd-border-visible align-top text-right">
+                        <div className="flex justify-end gap-4">
+                          <div>
+                            <span className="font-mono text-text-primary">{viaje.km}</span>
+                            <span className="font-mono text-label text-text-secondary ml-1">KM</span>
+                          </div>
+                          <div>
+                            <span className="font-mono text-text-primary">
+                              {viaje.tiempo_estimado_minutos ? formatTiempo(viaje.tiempo_estimado_minutos) : "—"}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="py-4 px-2 border-b border-nd-border-visible align-top text-right w-16">
-                      <button 
-                        onClick={() => viaje.id && handleDelete(viaje.id)}
-                        className="text-text-disabled hover:text-accent transition-colors opacity-0 group-hover:opacity-100"
-                        title="Eliminar"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        )}
-      </div>
+                      </td>
+                      <td className="py-4 px-2 border-b border-nd-border-visible align-top text-right w-12">
+                        <button
+                          onClick={() => viaje.id && handleDelete(viaje.id)}
+                          className="text-text-disabled hover:text-accent transition-colors opacity-0 group-hover:opacity-100"
+                          title="Eliminar"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
     </div>
   );
 }

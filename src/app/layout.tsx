@@ -4,6 +4,7 @@ import "./globals.css";
 import Link from "next/link";
 import clsx from "clsx";
 import ThemeToggle from "@/components/ThemeToggle";
+import NavLinks from "@/components/NavLinks";
 import PWARegister from "@/components/PWARegister";
 import InstallBanner from "@/components/InstallBanner";
 
@@ -74,23 +75,7 @@ export default function RootLayout({
               </div>
             </div>
             
-            <nav className="flex flex-wrap items-center gap-4 md:gap-6 font-mono text-xs md:text-sm tracking-widest uppercase">
-              <Link href="/nuevo" className="text-text-primary hover:text-text-display transition-colors">
-                [ NUEVO ]
-              </Link>
-              <Link href="/lugares" className="text-text-secondary hover:text-text-primary transition-colors">
-                LUGARES
-              </Link>
-              <Link href="/historial" className="text-text-secondary hover:text-text-primary transition-colors">
-                HISTORIAL
-              </Link>
-              <Link href="/resumen" className="text-text-secondary hover:text-text-primary transition-colors">
-                RESUMEN
-              </Link>
-              <div className="hidden md:block">
-                <ThemeToggle />
-              </div>
-            </nav>
+            <NavLinks />
           </div>
         </header>
 

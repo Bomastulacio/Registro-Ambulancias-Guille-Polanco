@@ -93,6 +93,22 @@ button {
   cursor: pointer;
 }
 
+input::placeholder, 
+textarea::placeholder {
+  color: var(--nd-text-secondary);
+  opacity: 0.7;
+}
+
+/* Specific styling for date inputs to ensure icons are visible */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: var(--calendar-filter, invert(1));
+  cursor: pointer;
+}
+
+.light input[type="date"]::-webkit-calendar-picker-indicator {
+  --calendar-filter: invert(0);
+}
+
 /* Hide scrollbar for cleaner look */
 ::-webkit-scrollbar {
   width: 8px;

@@ -408,7 +408,7 @@ export default function NuevoViaje() {
           <button 
             onClick={calculateRoute}
             disabled={isCalculating || !origen || !destino}
-            className="self-start mt-2 border border-nd-border-visible text-text-primary font-mono text-sm uppercase tracking-widest px-6 py-3 hover:bg-text-display hover:text-black transition-colors disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-text-primary flex items-center gap-2 rounded-full"
+            className="self-start mt-2 border border-nd-border-visible text-text-primary font-mono text-sm uppercase tracking-widest px-6 py-3 hover:bg-text-display hover:text-background transition-colors disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-text-primary flex items-center gap-2 rounded-full"
           >
             <Search size={16} />
             {isCalculating ? "[ CALCULANDO... ]" : "[ CALCULAR DISTANCIA ]"}
@@ -461,7 +461,7 @@ export default function NuevoViaje() {
         {/* SUBMIT */}
         <button 
           onClick={saveViaje}
-          className="mt-8 bg-text-display text-black font-mono text-sm uppercase tracking-widest px-8 py-4 hover:opacity-90 transition-opacity flex items-center justify-center gap-3 rounded-full w-full"
+          className="mt-8 bg-text-display text-background font-mono text-sm uppercase tracking-widest px-8 py-4 hover:opacity-90 transition-opacity flex items-center justify-center gap-3 rounded-full w-full"
         >
           <Save size={18} />
           GUARDAR VIAJE

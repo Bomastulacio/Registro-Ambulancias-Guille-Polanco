@@ -207,7 +207,7 @@ export default function Lugares() {
         <button 
           onClick={saveLugar}
           disabled={!alias || !selectedLocation}
-          className="self-start mt-2 bg-text-display text-black font-mono text-sm uppercase tracking-widest px-8 py-3 hover:opacity-90 transition-opacity disabled:opacity-50 rounded-full"
+          className="self-start mt-2 bg-text-display text-background font-mono text-sm uppercase tracking-widest px-8 py-3 hover:opacity-90 transition-opacity disabled:opacity-50 rounded-full"
         >
           Guardar Lugar
         </button>

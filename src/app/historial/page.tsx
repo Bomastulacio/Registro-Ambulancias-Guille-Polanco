@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
-import { Trash2, Download } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Trash2, Download, Map } from "lucide-react";
 import type { Viaje } from "@/lib/db";
 
 function formatTiempo(mins: number): string {
@@ -107,6 +108,8 @@ export default function Historial() {
     XLSX.writeFile(workbook, `viajes_${format(new Date(), 'yyyy-MM-dd')}.xlsx`);
   };
 
+  const router = useRouter();
+
   const parseList = (val: string) => {
     try { const arr = JSON.parse(val); return Array.isArray(arr) ? arr.join(", ") : val; }
     catch { return val; }
@@ -189,8 +192,13 @@ export default function Historial() {
           <div className="md:hidden flex flex-col">
             {viajes.map((viaje) => {
               const tripStr = parseList(viaje.tripulacion);
+              const hasCoords = viaje.origen_lat != null && viaje.destino_lat != null;
               return (
-                <div key={viaje.id} className="py-4 border-b border-nd-border-visible last:border-0 flex flex-col gap-2">
+                <div
+                  key={viaje.id}
+                  onClick={() => viaje.id && router.push(`/historial/${viaje.id}`)}
+                  className="py-4 border-b border-nd-border-visible last:border-0 flex flex-col gap-2 cursor-pointer active:bg-surface-raised transition-colors"
+                >
                   <div className="flex justify-between items-start gap-2">
                     <span className="font-mono text-xs text-text-secondary whitespace-nowrap">{viaje.fecha}</span>
                     <div className="flex gap-3 font-mono text-xs text-text-secondary">
@@ -212,13 +220,24 @@ export default function Historial() {
                         </div>
                       )}
                     </div>
-                    <button
-                      onClick={() => viaje.id && handleDelete(viaje.id)}
-                      className="text-text-disabled hover:text-accent transition-colors shrink-0 p-1"
-                      title="Eliminar"
-                    >
-                      <Trash2 size={16} />
-                    </button>
+                    <div className="flex items-center gap-1 shrink-0">
+                      {hasCoords && (
+                        <button
+                          onClick={e => { e.stopPropagation(); viaje.id && router.push(`/historial/${viaje.id}`); }}
+                          className="text-text-disabled hover:text-interactive transition-colors p-1"
+                          title="Ver mapa"
+                        >
+                          <Map size={16} />
+                        </button>
+                      )}
+                      <button
+                        onClick={e => { e.stopPropagation(); viaje.id && handleDelete(viaje.id); }}
+                        className="text-text-disabled hover:text-accent transition-colors p-1"
+                        title="Eliminar"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </div>
                   <RutaCell origen={viaje.origen} destino={viaje.destino} />
                 </div>
@@ -241,8 +260,13 @@ export default function Historial() {
               <tbody>
                 {viajes.map((viaje) => {
                   const tripStr = parseList(viaje.tripulacion);
+                  const hasCoords = viaje.origen_lat != null && viaje.destino_lat != null;
                   return (
-                    <tr key={viaje.id} className="hover:bg-surface-raised transition-colors group">
+                    <tr
+                      key={viaje.id}
+                      onClick={() => viaje.id && router.push(`/historial/${viaje.id}`)}
+                      className="hover:bg-surface-raised transition-colors group cursor-pointer"
+                    >
                       <td className="py-4 px-2 border-b border-nd-border-visible align-top whitespace-nowrap">
                         <div className="font-mono text-text-primary">{viaje.fecha}</div>
                       </td>
@@ -273,14 +297,25 @@ export default function Historial() {
                           </div>
                         </div>
                       </td>
-                      <td className="py-4 px-2 border-b border-nd-border-visible align-top text-right w-12">
-                        <button
-                          onClick={() => viaje.id && handleDelete(viaje.id)}
-                          className="text-text-disabled hover:text-accent transition-colors opacity-0 group-hover:opacity-100"
-                          title="Eliminar"
-                        >
-                          <Trash2 size={18} />
-                        </button>
+                      <td className="py-4 px-2 border-b border-nd-border-visible align-top text-right w-20">
+                        <div className="flex justify-end items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          {hasCoords && (
+                            <button
+                              onClick={e => { e.stopPropagation(); viaje.id && router.push(`/historial/${viaje.id}`); }}
+                              className="text-text-disabled hover:text-interactive transition-colors"
+                              title="Ver mapa"
+                            >
+                              <Map size={18} />
+                            </button>
+                          )}
+                          <button
+                            onClick={e => { e.stopPropagation(); viaje.id && handleDelete(viaje.id); }}
+                            className="text-text-disabled hover:text-accent transition-colors"
+                            title="Eliminar"
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );

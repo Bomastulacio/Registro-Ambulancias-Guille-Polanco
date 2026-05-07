@@ -99,13 +99,13 @@ textarea::placeholder {
   opacity: 0.7;
 }
 
-/* Specific styling for date inputs to ensure icons are visible */
-input[type="date"]::-webkit-calendar-picker-indicator {
+/* Specific styling for date/month inputs to ensure icons are visible */
+input::-webkit-calendar-picker-indicator {
   filter: var(--calendar-filter, invert(1));
   cursor: pointer;
 }
 
-.light input[type="date"]::-webkit-calendar-picker-indicator {
+.light input::-webkit-calendar-picker-indicator {
   --calendar-filter: invert(0);
 }
 
